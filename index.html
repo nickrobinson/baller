@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html>
+  <body>
+    <!-- Input for the initial PIN value -->
+    <label for="initialPin">Enter initial PIN: </label>
+    <input type="text" id="initialPin" value="7972">
+    <button id="setPin">Set PIN</button>
+
+    <br/>
+    <canvas id="qr"></canvas>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrious/4.0.2/qrious.min.js"></script>
+    <script>
+      (function() {
+        let pinValue = 7972; // Default value
+        let qr; // Variable to hold QRious instance
+
+        // Function to update the QR code
+        function updateQR() {
+          if (!qr) {
+            qr = new QRious({
+              element: document.getElementById('qr'),
+              value: `[PIN]${pinValue}`
+            });
+          } else {
+            qr.set({ value: `[PIN]${pinValue}` });
+          }
+        }
+
+        // Read the initial value from input
+        const initialPinInput = document.getElementById("initialPin");
+        const setPinButton = document.getElementById("setPin");
+
+        setPinButton.addEventListener("click", function() {
+          pinValue = Number(initialPinInput.value) || 0; // Read value and convert to number
+          updateQR(); // Update the QR code with the initial value
+
+          // Clear any existing interval
+          if (typeof interval !== "undefined") {
+            clearInterval(interval);
+          }
+
+          // Update the QR code every 2 seconds
+          interval = setInterval(function() {
+            pinValue--; // Decrement pinValue
+            updateQR(); // Update the QR code
+          }, 750); // 750 milliseconds
+        });
+      })();
+    </script>
+  </body>
+</html>
+
